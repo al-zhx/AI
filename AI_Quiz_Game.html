@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحدي الذكاء الاصطناعي - جماعة البحث العلمي والابتكار</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+.container{
+    max-width:600px;
+    margin:auto;
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,255,255,0.4);
+}
+button{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+button:hover{
+    opacity:0.85;
+}
+.timer{
+    font-size:18px;
+    margin-bottom:10px;
+    color:#00ffff;
+}
+input{
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    margin-bottom:10px;
+    width:80%;
+}
+.start-btn{
+    background:#00ffff;
+    color:black;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="gameBox">
+    <h2>🤖 تحدي الذكاء الاصطناعي</h2>
+    <h4>جماعة البحث العلمي والابتكار</h4>
+    <input type="text" id="playerName" placeholder="أدخل اسمك للبدء">
+    <button class="start-btn" onclick="startGame()">ابدأ التحدي 🚀</button>
+</div>
+
+<script>
+
+const quiz = [
+{
+    question:"ما هو الذكاء الاصطناعي؟",
+    answers:["آلة ميكانيكية","تقنية تحاكي التفكير البشري","نوع من الألعاب"],
+    correct:1
+},
+{
+    question:"تعلم الآلة يعتمد على؟",
+    answers:["التخمين","البيانات","الطاقة الشمسية"],
+    correct:1
+},
+{
+    question:"التعرف على الوجه مثال على؟",
+    answers:["الذكاء الاصطناعي","الكيمياء","الهندسة المدنية"],
+    correct:0
+},
+{
+    question:"كلما زادت البيانات أصبح النموذج؟",
+    answers:["أضعف","أدق","أبطأ دائماً"],
+    correct:1
+}
+];
+
+let currentQuestion = 0;
+let score = 0;
+let timeLeft = 10;
+let timer;
+let player = "";
+
+function startGame(){
+    player = document.getElementById("playerName").value;
+    if(player.trim() === ""){
+        alert("الرجاء إدخال الاسم أولاً");
+        return;
+    }
+    loadQuestion();
+}
+
+function startTimer(){
+    timeLeft = 10;
+    document.getElementById("time").innerText = timeLeft;
+    timer = setInterval(()=>{
+        timeLeft--;
+        document.getElementById("time").innerText = timeLeft;
+        if(timeLeft <= 0){
+            clearInterval(timer);
+            nextQuestion();
+        }
+    },1000);
+}
+
+function loadQuestion(){
+    const q = quiz[currentQuestion];
+    document.getElementById("gameBox").innerHTML =
+    "<div class='timer'>⏳ الوقت المتبقي: <span id='time'>10</span></div>" +
+    "<h3>"+ q.question +"</h3>" +
+    "<div id='answers'></div>";
+
+    const answersDiv = document.getElementById("answers");
+
+    q.answers.forEach((answer,index)=>{
+        const button = document.createElement("button");
+        button.innerText = answer;
+        button.onclick = ()=>checkAnswer(index);
+        answersDiv.appendChild(button);
+    });
+
+    startTimer();
+}
+
+function checkAnswer(index){
+    clearInterval(timer);
+    if(index === quiz[currentQuestion].correct){
+        score++;
+    }
+    nextQuestion();
+}
+
+function nextQuestion(){
+    currentQuestion++;
+    if(currentQuestion < quiz.length){
+        loadQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult(){
+    document.getElementById("gameBox").innerHTML =
+    "<h2>🎉 انتهى التحدي!</h2>" +
+    "<h3>"+ player +" نتيجتك: "+ score +" من "+ quiz.length +"</h3>" +
+    "<p>"+ getMessage() +"</p>" +
+    "<button onclick='location.reload()'>إعادة اللعب 🔄</button>";
+}
+
+function getMessage(){
+    if(score === quiz.length){
+        return "🚀 عبقري ذكاء اصطناعي!";
+    } else if(score >= 2){
+        return "👏 ممتاز! لديك معرفة جيدة.";
+    } else {
+        return "💡 حاول مرة أخرى وطور معرفتك.";
+    }
+}
+
+</script>
+
+</body>
+</html>
